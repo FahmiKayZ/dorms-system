@@ -1,0 +1,566 @@
+<?php
+session_start();
+
+$isLoggedIn = isset($_SESSION['user']);
+$userName   = $isLoggedIn ? htmlspecialchars($_SESSION['user']['name']) : '';
+
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header('Location: index.php');
+    exit;
+}
+
+$loginError = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
+    $u = trim($_POST['username'] ?? '');
+    $p = $_POST['password'] ?? '';
+    $demo = [
+        'admin'   => ['password' => 'admin123',   'name' => 'Administrator'],
+        'student' => ['password' => 'student123', 'name' => 'Demo Student'],
+    ];
+    if (isset($demo[$u]) && $demo[$u]['password'] === $p) {
+        $_SESSION['user'] = ['username' => $u, 'name' => $demo[$u]['name']];
+        header('Location: index.php');
+        exit;
+    }
+    $loginError = 'Incorrect username or password.';
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D.O.R.M.S. – Digital Occupancy And Room Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+/* ── TOKENS ── */
+:root {
+  /* ── Light grayscale base ──
+     Named per common web-color conventions, lightest to darkest:
+     Whitesmoke → Gainsboro → Light Gray → Dim Gray → Eerie Black */
+  --bg:           #f5f5f5;  /* Whitesmoke  — main page background, softer than pure white   */
+  --bg-surface:   #e8e8e8;  /* Gainsboro   — card / section backgrounds, one step darker     */
+  --bg-nav:       #009E60;  /* Shamrock Green — navbar sits above everything, kept brightest    */
+
+  --accent:       #4eca6e;  /* Mantis Green — D.O.R.M.S. brand green, kept as the one pop of color */
+  --accent-dim:   #3aaa58;  /* Sea Green    — darker green for hover/active states          */
+
+  --white:        #ffffff;  /* White       — base for text-on-dark and card fills            */
+  --text-body:    #4a4a4a;  /* Davy's Gray  — primary readable body text on light background */
+  --text-muted:   #3a3131;  /* Dim Gray     — secondary/muted text, labels, footnotes        */
+  --text-heading: #1f1f1f;  /* Eerie Black  — headline text, max contrast on light bg        */
+
+  --btn-primary:   #3a9147; /* Sea Green (darker) — primary button fill                      */
+  --btn-primary-h: #2d7a3a; /* Hunter Green        — primary button hover                    */
+  --btn-ghost-b:   rgba(0,0,0,0.18); /* translucent black border for ghost buttons on light bg */
+
+  --border:       #d4d4d4;  /* Light Gray  — hairline borders/dividers on light surfaces      */
+  --shadow:       rgba(0,0,0,0.10); /* soft black shadow, lighter than dark-theme version     */
+
+  --radius:       10px;
+  --nav-h:        68px;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg);
+  color: var(--text-heading);  /* Eerie Black — default text now dark-on-light, inverted from before */
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── NAVBAR ── */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--nav-h);
+  background: var(--bg-nav);
+  display: flex;
+  align-items: center;
+  padding: 0 60px;
+  gap: 0;
+  border-bottom: 1px solid var(--border); /* Light Gray hairline, replaces dark theme's faint green line */
+  box-shadow: 0 1px 4px var(--shadow);    /* tiny lift so the white navbar separates from the page bg   */
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  margin-right: 56px;
+  flex-shrink: 0;
+}
+
+.nav-brand-icon {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #4eca6e, #2d7a3a);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 0 12px rgba(78,202,110,0.35);
+}
+
+.nav-brand-text {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-heading);  /* Eerie Black — was white, now dark since navbar bg is light */
+  letter-spacing: -0.01em;
+}
+
+.nav-brand-text span { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 4px;
+  flex: 1;
+}
+
+.nav-links a {
+  padding: 8px 18px;
+  color: var(--text-body);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: var(--radius);
+  transition: color 0.18s, background 0.18s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--text-heading);  /* Eerie Black — was white, now dark text on light hover background */
+  background: rgba(78,202,110,0.12);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1.5px solid var(--btn-ghost-b);
+  color: var(--text-heading);  /* Eerie Black — was white, ghost button text now dark on light bg */
+  padding: 8px 22px;
+  border-radius: var(--radius);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.18s, background 0.18s;
+}
+.btn-ghost:hover { border-color: var(--accent); background: rgba(78,202,110,0.08); }
+
+.btn-primary {
+  background: var(--btn-primary);
+  color: var(--white);
+  border: none;
+  padding: 9px 24px;
+  border-radius: var(--radius);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-primary:hover { background: var(--btn-primary-h); }
+
+.user-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(78,202,110,0.1);
+  border: 1.5px solid rgba(78,202,110,0.25);
+  border-radius: 999px;
+  padding: 5px 14px 5px 6px;
+}
+.user-pill .av {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 0.72rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+}
+.user-pill span { font-size: 0.85rem; font-weight: 500; color: var(--text-heading); }  /* Eerie Black — was white */
+
+.btn-logout {
+  background: none; border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem; font-family: 'Inter', sans-serif;
+  cursor: pointer; text-decoration: underline;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: calc(100vh - var(--nav-h));
+  display: flex;
+  align-items: center;
+  padding: 80px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle radial glow bottom-left — the one "signature" element */
+.hero::before {
+  content: '';
+  position: absolute;
+  left: -160px; bottom: -160px;
+  width: 560px; height: 560px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(78,202,110,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-content {
+  flex: 1;
+  max-width: 560px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+  border: 1px solid rgba(78,202,110,0.3);
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.hero-headline {
+  font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--text-heading);  /* Eerie Black — was white, headline now dark-on-light */
+  margin-bottom: 24px;
+}
+
+.hero-headline em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.hero-body {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-body);
+  max-width: 440px;
+  margin-bottom: 40px;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hero-cta .btn-primary { font-size: 0.95rem; padding: 12px 30px; }
+.hero-cta .btn-ghost   { font-size: 0.95rem; padding: 12px 30px; }
+
+/* ── HERO IMAGE CLUSTER ── */
+.hero-visual {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  padding-left: 60px;
+}
+
+.img-cluster {
+  position: relative;
+  width: 520px;
+  height: 380px;
+}
+
+.img-card {
+  position: absolute;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--bg-surface);
+  box-shadow: 0 24px 64px var(--shadow); /* shadow now light/soft, not heavy black like dark theme */
+}
+
+.img-card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.92;
+}
+
+/* Placeholder when no real photo */
+.img-placeholder {
+  width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #e8e8e8, #d4d4d4); /* Gainsboro → Light Gray, was dark green gradient */
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+.img-placeholder svg { opacity: 0.55; }
+
+.img-main {
+  width: 380px; height: 280px;
+  top: 40px; left: 60px;
+  z-index: 2;
+}
+
+.img-secondary {
+  width: 170px; height: 180px;
+  top: 0; left: 0;
+  z-index: 1;
+  opacity: 0.75;
+}
+
+/* ── STATS BAR ── */
+.stats-bar {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);    /* Light Gray hairline */
+  border-bottom: 1px solid var(--border); /* Light Gray hairline */
+  padding: 36px 60px;
+  display: flex;
+  justify-content: space-around;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.stat { text-align: center; }
+.stat-num {
+  font-size: 2rem; font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--bg-nav);
+  border-top: 1px solid var(--border); /* Light Gray hairline, was faint green */
+  padding: 24px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+footer .brand { color: var(--accent); font-weight: 700; }
+
+/* ── LOGIN MODAL ── */
+.overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45); /* slightly lighter dimming since the page itself is already light */
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+.overlay.open { display: flex; }
+
+.modal {
+  background: var(--white);       /* White — modal floats above the gray page as the brightest surface */
+  border: 1px solid var(--border); /* Light Gray hairline border */
+  border-radius: 18px;
+  padding: 44px 48px;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  box-shadow: 0 32px 80px var(--shadow); /* soft shadow, not heavy black like dark theme */
+}
+
+.modal-close {
+  position: absolute; top: 16px; right: 20px;
+  background: none; border: none;
+  color: var(--text-muted); font-size: 1.5rem;
+  cursor: pointer; line-height: 1;
+}
+.modal-close:hover { color: var(--text-heading); } /* Eerie Black on hover, was white */
+
+.modal h2 {
+  font-size: 1.5rem; font-weight: 800;
+  color: var(--text-heading); /* Eerie Black — was white */
+  margin-bottom: 6px;
+}
+.modal p.sub { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 28px; }
+
+.field { margin-bottom: 18px; }
+.field label {
+  display: block;
+  font-size: 0.78rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+}
+.field input {
+  width: 100%;
+  background: var(--bg);            /* Whitesmoke fill, was translucent white-on-dark */
+  border: 1.5px solid var(--border); /* Light Gray border, was translucent green */
+  border-radius: 9px;
+  padding: 11px 14px;
+  color: var(--text-heading);        /* Eerie Black typed text, was white */
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.18s;
+}
+.field input:focus { border-color: var(--accent); }
+
+.modal .btn-primary { width: 100%; justify-content: center; padding: 13px; font-size: 0.95rem; margin-top: 4px; }
+
+.error { color: #d64545; font-size: 0.84rem; margin-bottom: 14px; text-align: center; } /* Indian Red, slightly muted for light bg */
+.demo-hint { text-align: center; color: var(--text-muted); font-size: 0.78rem; margin-top: 14px; }
+.demo-hint strong { color: var(--text-body); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .navbar { padding: 0 24px; }
+  .nav-links { display: none; }
+  .hero { flex-direction: column; padding: 60px 24px; gap: 48px; min-height: auto; }
+  .hero-visual { padding-left: 0; justify-content: center; width: 100%; }
+  .img-cluster { width: 320px; height: 240px; }
+  .img-main { width: 240px; height: 180px; top: 30px; left: 40px; }
+  .img-secondary { width: 110px; height: 120px; }
+  .stats-bar { padding: 28px 24px; }
+  footer { padding: 20px 24px; flex-direction: column; align-items: flex-start; }
+  .modal { padding: 32px 24px; margin: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav class="navbar">
+  <a href="homepage.php" class="nav-brand">
+    <div class="nav-brand-icon">🏠</div>
+    <span class="nav-brand-text">D.O.R.M.S<span>.</span></span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="homepage.php" class="active">Home</a></li>
+    <li><a href="rooms.php">Your Rooms</a></li>
+    <li><a href="support.php">Support</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <?php if ($isLoggedIn): ?>
+      <div class="user-pill">
+        <div class="av"><?= strtoupper(substr($userName,0,1)) ?></div>
+        <span><?= $userName ?></span>
+      </div>
+      <a href="?logout=1" class="btn-logout">Log out</a>
+    <?php else: ?>
+      <button class="btn-ghost" onclick="openModal()">Log In</button>
+      <a href="register.php" class="btn-primary">Register</a>
+    <?php endif; ?>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-content">
+    <span class="hero-eyebrow">University Accommodation</span>
+
+    <h1 class="hero-headline">
+      Your Home,<br>
+      at a better <em>Place.</em>
+    </h1>
+
+    <p class="hero-body">
+      Book, manage, and track your university room entirely online.
+      Simple applications, instant confirmations, and real-time room availability — all in one place.
+    </p>
+
+    <div class="hero-cta">
+      <?php if ($isLoggedIn): ?>
+        <a href="book-rooms.php" class="btn-primary">Book a Room</a>
+      <?php else: ?>
+        <button class="btn-primary" onclick="openModal()">Book a Room</button>
+      <?php endif; ?>
+      <a href="eligibility.php" class="btn-ghost">Check Eligibility</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS BAR ── -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">200+</div><div class="stat-label">Rooms Available</div></div>
+  <div class="stat"><div class="stat-num">4</div><div class="stat-label">Blocks / Wings</div></div>
+  <div class="stat"><div class="stat-num">24 / 7</div><div class="stat-label">Support</div></div>
+  <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Online Booking</div></div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span>&copy; <?= date('Y') ?> <span class="brand">D.O.R.M.S.</span> — Digital Occupancy And Room Management System</span>
+  <span>All rights reserved.</span>
+</footer>
+
+<!-- ── LOGIN MODAL ── -->
+<div class="overlay" id="loginOverlay" role="dialog" aria-modal="true" aria-labelledby="modalH">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+    <h2 id="modalH">Welcome back</h2>
+    <p class="sub">Log in to manage your room booking.</p>
+
+    <?php if ($loginError): ?>
+      <p class="error"><?= htmlspecialchars($loginError) ?></p>
+    <?php endif; ?>
+
+    <form method="POST" action="homepage.php">
+      <div class="field">
+        <label for="u">Username</label>
+        <input type="text" id="u" name="username" placeholder="e.g. student" required autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="pw">Password</label>
+        <input type="password" id="pw" name="password" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <button type="submit" name="login" class="btn-primary">Log In</button>
+    </form>
+
+    <p class="demo-hint">Demo: <strong>admin</strong> / <strong>admin123</strong></p>
+  </div>
+</div>
+
+<script>
+function openModal()  { document.getElementById('loginOverlay').classList.add('open'); document.getElementById('u').focus(); }
+function closeModal() { document.getElementById('loginOverlay').classList.remove('open'); }
+
+document.getElementById('loginOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+<?php if ($loginError): ?>openModal();<?php endif; ?>
+</script>
+</body>
+</html>
