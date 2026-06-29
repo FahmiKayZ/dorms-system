@@ -5,6 +5,7 @@ include("connection.php");
 
 $studentID = $_SESSION['studentID'];
 $roomID = $_POST['roomID'];
+$bedNumber = (int)$_POST['bedNumber'];
 
 /* CHECK EXISTING BOOKING */
 
@@ -47,6 +48,25 @@ if($room['currentOccupancy'] >= $room['roomCapacity']){
 
     exit();
 }
+$checkBed = mysqli_query(
+    $connect,
+    "SELECT *
+     FROM booking
+     WHERE roomID='$roomID'
+     AND bedNumber='$bedNumber'"
+);
+
+if(mysqli_num_rows($checkBed) > 0){
+
+    echo "
+    <script>
+        alert('This bed has already been booked.');
+        window.history.back();
+    </script>
+    ";
+
+    exit();
+}
 
 $sql = "
 INSERT INTO booking
@@ -54,18 +74,20 @@ INSERT INTO booking
 bookingDate,
 bookingStatus,
 studentID,
-roomID
+roomID,
+bedNumber
 )
 VALUES
 (
 NOW(),
 'Approved',
 '$studentID',
-'$roomID'
+'$roomID',
+'$bedNumber'
 )
 ";
 
-mysqli_query($connect,$sql);
+mysqli_query($connect, $sql);
 
 /* UPDATE OCCUPANCY */
 mysqli_query(

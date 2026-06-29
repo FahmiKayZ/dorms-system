@@ -1,22 +1,80 @@
 <?php
 session_start();
 
+include("connection.php");
+
 $error = '';
 $success = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name     = trim($_POST['name'] ?? '');
-    $studentId = trim($_POST['ID'] ?? '');
-    $password = $_POST['password'] ?? '';
+    $name            = trim($_POST['name'] ?? '');
+    $studentId       = trim($_POST['ID'] ?? '');
+    $email           = trim($_POST['email'] ?? '');
+    $gender          = $_POST['gender'] ?? '';
+    $password        = $_POST['password'] ?? '';
+    $confirmPassword = $_POST['confirmPassword'] ?? '';
 
-    if ($name === '' || $studentId === '' || $password === '') {
-        $error = 'Please fill in all fields.';
-    } else {
-        // TODO: insert into your database here
-        // e.g. $stmt = $pdo->prepare("INSERT INTO users (name, student_id, password_hash) VALUES (?, ?, ?)");
-        // $stmt->execute([$name, $studentId, password_hash($password, PASSWORD_DEFAULT)]);
+   if (
+    $name == '' ||
+    $studentId == '' ||
+    $email == '' ||
+    $gender == '' ||
+    $password == '' ||
+    $confirmPassword == ''
+) {
+    $error = "Please fill in all fields.";
+}elseif ($password != $confirmPassword) {
+    $error = "Password does not match.";
+}
+else {
+
+    $check = mysqli_query(
+        $connect,
+        "SELECT * FROM student
+         WHERE studentID='$studentId'"
+    );
+
+    if(mysqli_num_rows($check)>0){
+
+        $error = "Student ID already registered.";
+
+    }else{
+
+        $sql = "
+        INSERT INTO student
+        (
+        studentID,
+        studentName,
+        studentEmail,
+        studentPassword,
+        studentGender,
+        collegeStatus
+        )
+        VALUES
+        (
+        '$studentId',
+        '$name',
+        '$email',
+        '$password',
+        '$gender',
+        'Pending'
+        )
+        ";
+
+        mysqli_query($connect,$sql);
+        
+        mysqli_query($connect,"
+      INSERT INTO eligibility
+      (studentID,status)
+      VALUES
+      ('$studentId','Pending')
+      ");
+
         $success = true;
+        header("refresh:2;url=index.php");
+      exit();
     }
+}
 }
 ?>
 <!DOCTYPE html>
@@ -103,7 +161,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     margin-bottom: 6px;
   }
 
-  .field input {
+  .field input,
+  .field select {
     width: 100%;
     padding: 11px 14px;
     border: 1.5px solid var(--border);
@@ -115,7 +174,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     outline: none;
     transition: border-color 0.18s;
   }
-  .field input:focus { border-color: var(--accent); }
+  .field input:focus,
+  .field select:focus { border-color: var(--accent); }
 
   /* Password field needs a relative wrapper so the toggle button
      can be absolutely positioned inside the input, on the right edge */
@@ -224,11 +284,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <label for="ID">Student ID</label>
           <input type="text" id="ID" name="ID" required>
         </div>
+        <div class="field">
+    <label for="email">Student Email</label>
+    <input type="email"
+           id="email"
+           name="email"
+           placeholder="example@student.uitm.edu.my"
+           required>
+</div>
+
+<div class="field">
+    <label for="gender">Gender</label>
+
+    <select id="gender" name="gender" required>
+
+        <option value="">Select Gender</option>
+
+        <option value="Male">Male</option>
+
+        <option value="Female">Female</option>
+
+    </select>
+</div>
 
         <div class="field">
           <label for="password">Password</label>
           <div class="password-wrapper">
-            <input type="password" id="password" name="password" required minlength="6">
+            <input type="password" id="password" name="password" required minlength="8">
             <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Show password">
               <!-- eye-open icon, swapped to eye-off via JS when toggled -->
               <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -238,13 +320,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </button>
           </div>
         </div>
+        <div class="field">
+    <label for="confirmPassword">Confirm Password</label>
+
+    <input type="password"
+           id="confirmPassword"
+           name="confirmPassword"
+           required
+           minlength="8">
+</div>
 
         <div class="btn-row">
           <button type="submit" class="btn-primary">Submit</button>
         </div>
 
         <div class="return-link">
-          <a href="homepage.php">Return to Home</a>
+          <a href="index.php">Return to Home</a>
         </div>
       </form>
     </div>

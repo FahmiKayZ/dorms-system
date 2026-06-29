@@ -6,9 +6,14 @@ include("connection.php");
 $studentID = $_SESSION['studentID'];
 
 $sql = "
-SELECT *
+SELECT
+booking.*,
+room.blockName,
+room.floorLevel
 FROM booking
-WHERE studentID='$studentID'
+INNER JOIN room
+ON booking.roomID = room.roomID
+WHERE booking.studentID='$studentID'
 ";
 
 $result = mysqli_query($connect,$sql);
@@ -48,32 +53,55 @@ $booking = mysqli_fetch_assoc($result);
 
             <div class="booking-info">
 
-                <p>
-                    <strong>Room ID :</strong>
-                    <?php echo $booking['roomID']; ?>
-                </p>
+    <h2>🏠 Room <?php echo $booking['roomID']; ?></h2>
 
-                <p>
-                    <strong>Status :</strong>
-                    <?php echo $booking['bookingStatus']; ?>
-                </p>
+    <p>
+        <strong>🛏 Bed :</strong>
+        Bed <?php echo $booking['bedNumber']; ?>
+    </p>
 
-                <p>
-                    <strong>Booking Date :</strong>
-                    <?php echo $booking['bookingDate']; ?>
-                </p>
+    <p>
+        <strong>📍 Block :</strong>
+        <?php echo $booking['blockName']; ?>
+    </p>
 
-            </div>
+    <p>
+        <strong>🏢 Floor :</strong>
+        <?php echo $booking['floorLevel']; ?>
+    </p>
 
-        <?php } else { ?>
+    <p>
+        <strong>🟢 Status :</strong>
+        <?php echo $booking['bookingStatus']; ?>
+    </p>
 
-            <p>No booking found.</p>
+    <p>
+        <strong>📅 Booking Date :</strong>
+        <?php echo date("d M Y, h:i A", strtotime($booking['bookingDate'])); ?>
+    </p>
 
-        <?php } ?>
+    <br>
 
-    </div>
+    <form action="cancelbooking.php" method="POST">
+
+        <input
+            type="hidden"
+            name="bookingID"
+            value="<?php echo $booking['bookingID']; ?>">
+
+        <button
+            type="submit"
+            class="cancel-btn">
+            Cancel Booking
+        </button>
+
+    </form>
 
 </div>
-
+        <?php } else { ?>
+            <p>No booking found.</p>
+        <?php } ?>
+    </div>
+</div>
 </body>
 </html>

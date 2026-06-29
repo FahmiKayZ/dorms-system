@@ -7,6 +7,7 @@ if(!isset($_SESSION['studentID'])){
 }
 
 $roomID = $_GET['roomID'];
+$bedNumber = (int)$_GET['bed'];
 ?>
 
 <!DOCTYPE html>
@@ -50,22 +51,14 @@ $roomID = $_GET['roomID'];
             </p>
 
             <form action="savebooking.php" method="POST">
-
-                <input type="hidden"
-                       name="roomID"
-                       value="<?php echo $roomID; ?>">
-
-                <button type="submit" class="dashboard-btn">
-                    Confirm Booking
-                </button>
-
+                <input type="hidden" name="roomID" value="<?php echo $roomID; ?>">
+                <input type="hidden" name="bedNumber" value="<?= $bedNumber ?>">
+                <button type="submit" class="dashboard-btn">Confirm Booking</button>
+                <p><strong>Bed :</strong>   Bed <?php echo $bedNumber; ?>
+            </p>
             </form>
-
         </div>
-
     </div>
-
 </div>
-
 </body>
 </html>

@@ -122,11 +122,9 @@ $result = mysqli_query($connect,$sql);
 
             <?php if($row['roomStatus']=="Available" && !$hasBooking){ ?>
 
-                <a href="bookroom.php?roomID=<?php echo $row['roomID']; ?>"
-                   class="book-btn">
-
-                    Book Room
-
+                <a href="room_details.php?room=<?php echo $row['roomID']; ?>"
+                class="book-btn">
+                View Room
                 </a>
 
             <?php } ?>

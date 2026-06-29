@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+include 'connection.php';
 $isLoggedIn = isset($_SESSION['user']);
 $userName   = $isLoggedIn ? htmlspecialchars($_SESSION['user']['name']) : '';
 
@@ -11,19 +12,51 @@ if (isset($_GET['logout'])) {
 }
 
 $loginError = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
-    $u = trim($_POST['username'] ?? '');
-    $p = $_POST['password'] ?? '';
-    $demo = [
-        'admin'   => ['password' => 'admin123',   'name' => 'Administrator'],
-        'student' => ['password' => 'student123', 'name' => 'Demo Student'],
-    ];
-    if (isset($demo[$u]) && $demo[$u]['password'] === $p) {
-        $_SESSION['user'] = ['username' => $u, 'name' => $demo[$u]['name']];
-        header('Location: index.php');
-        exit;
+
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
+    $role = $_POST['login_role'];
+
+    if ($role == "student") {
+
+        $sql = "SELECT * FROM student
+                WHERE studentID='$username'
+                AND studentPassword='$password'";
+
+        $result = mysqli_query($connect,$sql);
+
+        if(mysqli_num_rows($result)>0){
+
+            $row = mysqli_fetch_assoc($result);
+            $_SESSION['user'] = [
+                'role' => 'student',
+                'studentID' => $row['studentID'],
+                'name' => $row['studentName'],
+                'email' => $row['studentEmail']
+            ];
+            header("Location:index.php");
+            exit();
+        }
+        $loginError="Incorrect Student ID or Password.";
+    }else{
+        $sql="SELECT * FROM admin
+              WHERE adminID='$username'
+              AND adminPassword='$password'";
+        $result=mysqli_query($connect,$sql);
+        if(mysqli_num_rows($result)>0){
+            $row=mysqli_fetch_assoc($result);
+            $_SESSION['user']=[
+                'role'=>'admin',
+                'adminID'=>$row['adminID'],
+                'name'=>$row['adminName']
+            ];
+            header("Location:admin_dashboard.php");
+            exit();
+        }
+        $loginError="Incorrect Admin ID or Password.";
     }
-    $loginError = 'Incorrect username or password.';
 }
 ?>
 <!DOCTYPE html>
@@ -241,6 +274,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 <p>Your booking status will be displayed in the My Booking page.</p>
 
 </div>
+
+</section>
+<!-- ── SUPPORT CENTER ── -->
+
+<section class="support-section">
+
+<h2>Need Help?</h2>
+
+<p>
+
+Having trouble logging in, registering, or booking a room?
+
+Our administrator is ready to help you.
+
+</p>
+
+<a href="guest_support.php" class="btn-primary">
+
+📩 Submit Support Ticket
+
+</a>
 
 </section>
 
