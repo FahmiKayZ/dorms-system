@@ -40,7 +40,7 @@ $booking = mysqli_fetch_assoc($result);
         <a href="mybooking.php">My Booking</a>
     </div>
 
-    <a href="dashboard.php" class="logout-btn">Back</a>
+    <a href="dashboard.php" class="logout-btn">← Back to Dashboard</a>
 </nav>
 
 <div class="dashboard-container">
@@ -100,6 +100,8 @@ $booking = mysqli_fetch_assoc($result);
 </div>
         <?php } else { ?>
             <p>No booking found.</p>
+            <br>
+            <a href="floorplan.php" class="book-btn">View Available Rooms</a>
         <?php } ?>
     </div>
 </div>

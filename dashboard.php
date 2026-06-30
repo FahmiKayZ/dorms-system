@@ -85,7 +85,18 @@ $booking = mysqli_fetch_assoc($result);
 
             <div>
                 <strong>Eligibility</strong>
-                <p><?php echo $eligibilityData['status'] ?? 'NO DATA'; ?></p>
+                <p>
+                <?php
+                $elig = $eligibilityData['status'] ?? null;
+                if($elig=="YES"){
+                    echo "<span class='status-available'>✅ Eligible</span>";
+                } elseif($elig=="NO"){
+                    echo "<span class='status-full'>❌ Not Eligible</span>";
+                } else {
+                    echo "<span class='status-full'>No Data</span>";
+                }
+                ?>
+                </p>
             </div>
 
         </div>
@@ -102,9 +113,11 @@ $booking = mysqli_fetch_assoc($result);
             My Booking
         </a>
 
+        <?php if($booking){ ?>
         <a href="cancelbooking.php" class="action-btn">
             Cancel Booking
         </a>
+        <?php } ?>
 
     </div>
 
@@ -128,7 +141,7 @@ $booking = mysqli_fetch_assoc($result);
 
         <?php } else { ?>
 
-            <p>No active booking found.</p>
+            <p>🛏️ No active booking found.</p>
 
         <?php } ?>
 

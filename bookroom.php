@@ -28,7 +28,7 @@ $bedNumber = (int)$_GET['bed'];
         <a href="mybooking.php">My Booking</a>
     </div>
 
-    <a href="floorplan.php" class="logout-btn">Back</a>
+    <a href="floorplan.php" class="logout-btn">← Back to Rooms</a>
 </nav>
 
 <div class="dashboard-container">
@@ -37,26 +37,35 @@ $bedNumber = (int)$_GET['bed'];
 
         <h1>Confirm Booking</h1>
 
-        <div class="booking-details">
+        <div class="booking-info">
 
-            <h2>Selected Room</h2>
+            <h2>🏠 Selected Room</h2>
 
             <p>
-                <strong>Room ID :</strong>
+                <strong>📌 Room ID :</strong>
                 <?php echo $roomID; ?>
             </p>
 
             <p>
-                Please confirm your booking before proceeding.
+                <strong>🛏 Bed :</strong>
+                Bed <?php echo $bedNumber; ?>
             </p>
+
+            <div class="booking-details">
+                <p>
+                    Please confirm your booking before proceeding.
+                    Once confirmed, this room and bed will be reserved under your name.
+                </p>
+            </div>
+
+            <br>
 
             <form action="savebooking.php" method="POST">
                 <input type="hidden" name="roomID" value="<?php echo $roomID; ?>">
                 <input type="hidden" name="bedNumber" value="<?= $bedNumber ?>">
-                <button type="submit" class="dashboard-btn">Confirm Booking</button>
-                <p><strong>Bed :</strong>   Bed <?php echo $bedNumber; ?>
-            </p>
+                <button type="submit" class="dashboard-btn">✅ Confirm Booking</button>
             </form>
+
         </div>
     </div>
 </div>

@@ -193,11 +193,61 @@ border-radius:8px;
 
 text-decoration:none;
 
+display:inline-block;
+
 }
 
 .delete-btn:hover{
 
 background:#dc2626;
+
+}
+
+.edit-btn{
+
+background:#3b82f6;
+
+padding:10px 18px;
+
+color:white;
+
+border-radius:8px;
+
+text-decoration:none;
+
+display:inline-block;
+
+margin-right:8px;
+
+}
+
+.edit-btn:hover{
+
+background:#2563eb;
+
+}
+
+.add-btn{
+
+background:#16a34a;
+
+padding:12px 20px;
+
+color:white;
+
+border-radius:8px;
+
+text-decoration:none;
+
+font-weight:600;
+
+display:inline-block;
+
+}
+
+.add-btn:hover{
+
+background:#15803d;
 
 }
 
@@ -522,7 +572,7 @@ background:#15803d;
 
 }
 
-.pending{
+.status-pending{
 
     background:#f59e0b;
 
@@ -561,6 +611,108 @@ background:#15803d;
 }
 
 .view-btn:hover{
+
+    background:#15803d;
+
+}
+
+/* =====================================================
+   FORM CARD (Add/Edit Room, etc.)
+===================================================== */
+
+.form-card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:40px;
+
+    max-width:480px;
+
+    margin:20px 0 40px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+    border:1px solid #e5e7eb;
+
+}
+
+.form-group{
+
+    margin-bottom:24px;
+
+}
+
+.form-group label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    font-weight:600;
+
+    color:#374151;
+
+    font-size:15px;
+
+}
+
+.form-group input,
+.form-group select{
+
+    width:100%;
+
+    padding:12px 14px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:10px;
+
+    font-size:15px;
+
+    transition:.2s;
+
+    background:white;
+
+}
+
+.form-group input:focus,
+.form-group select:focus{
+
+    outline:none;
+
+    border-color:#16a34a;
+
+    box-shadow:0 0 0 3px rgba(22,163,74,.15);
+
+}
+
+.form-submit-btn{
+
+    background:#16a34a;
+
+    color:white;
+
+    border:none;
+
+    padding:13px 26px;
+
+    border-radius:10px;
+
+    font-weight:bold;
+
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    width:100%;
+
+}
+
+.form-submit-btn:hover{
 
     background:#15803d;
 

@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 <!-- ── HERO ── -->
 <section class="hero">
   <div class="hero-content">
-    <span class="hero-eyebrow">University Accommodation</span>
+    <span class="hero-eyebrow">KOLEJ KERAWANG</span>
 
     <h1 class="hero-headline">
       Your Home,<br>
@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
       <?php if ($isLoggedIn): ?>
         <a href="book-rooms.php" class="btn-primary">Book a Room</a>
       <?php else: ?>
-        <a href="login.php" class="btn-primary">Book a Room</a>
+        <a href="javascript:void(0)" class="btn-primary" onclick="alert('Please login first.');">Book a Room</a>
       <?php endif; ?>
       <a href="eligibility.php" class="btn-ghost">Check Eligibility</a>
     </div>

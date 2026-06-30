@@ -162,6 +162,9 @@ else{
 
 </td>
 </tr>
+
+<?php } ?>
+
 </table>
 
 <?php

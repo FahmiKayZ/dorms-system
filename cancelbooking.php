@@ -37,7 +37,7 @@ $result = mysqli_query($connect,$sql);
     </div>
 
     <a href="dashboard.php" class="logout-btn">
-        Back
+        ← Back to Dashboard
     </a>
 
 </nav>
@@ -48,17 +48,23 @@ $result = mysqli_query($connect,$sql);
 
         <h1>Cancel Booking</h1>
 
-        <?php while($row=mysqli_fetch_assoc($result)){ ?>
+        <?php
+
+        $hasBooking = mysqli_num_rows($result) > 0;
+
+        if($hasBooking){
+
+        while($row=mysqli_fetch_assoc($result)){ ?>
 
         <div class="booking-info">
 
             <p>
-                <strong>Room ID :</strong>
+                <strong>🏠 Room ID :</strong>
                 <?php echo $row['roomID']; ?>
             </p>
 
             <p>
-                <strong>Status :</strong>
+                <strong>🟢 Status :</strong>
                 <?php echo $row['bookingStatus']; ?>
             </p>
 
@@ -74,15 +80,23 @@ $result = mysqli_query($connect,$sql);
 
                 <button
                     type="submit"
-                    class="dashboard-btn">
+                    class="cancel-btn">
 
-                    Cancel Booking
+                    🗑 Cancel Booking
 
                 </button>
 
             </form>
 
         </div>
+
+        <?php }
+
+        } else { ?>
+
+        <p>🛏️ You don't have any active booking to cancel.</p>
+        <br>
+        <a href="floorplan.php" class="book-btn">View Available Rooms</a>
 
         <?php } ?>
 

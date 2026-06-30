@@ -143,6 +143,26 @@ body {
 }
 .btn-primary:hover { background: var(--btn-primary-h); }
 
+.btn-login{
+    background:#ffffff;
+    color:var(--accent-dim);
+    border:2px solid #ffffff;
+    padding:9px 24px;
+    border-radius:10px;
+    text-decoration:none;
+    font-size:.88rem;
+    font-weight:700;
+    transition:.3s;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.btn-login:hover{
+    background:rgba(255,255,255,.85);
+    color:var(--btn-primary-h);
+}
+
 .user-pill {
   display: flex; align-items: center; gap: 8px;
   background: rgba(78,202,110,0.1);
@@ -283,6 +303,7 @@ body {
     box-shadow:0 24px 64px rgba(0,0,0,.10);
     border:1px solid rgba(255,255,255,.5);
     transition:.35s;
+
     .img-card:hover{
     transform:translateY(-10px) scale(1.02);
     box-shadow:0 30px 80px rgba(0,158,96,.18);

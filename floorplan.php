@@ -85,7 +85,7 @@ $result = mysqli_query($connect,$sql);
     </div>
 
     <a href="dashboard.php" class="logout-btn">
-        Back
+        ← Back to Dashboard
     </a>
 
 </nav>

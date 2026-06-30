@@ -61,21 +61,19 @@ if(isset($_POST['submit'])){
 <body>
 
 <nav class="navbar">
+  <a href="index.php" class="nav-brand">
+    <div class="nav-brand-icon">🏠</div>
+    <span class="nav-brand-text">D.O.R.M.S<span>.</span></span>
+  </a>
 
-<a href="index.php" class="logo">
-🏠 D.O.R.M.S.
-</a>
+  <ul class="nav-links">
+    <li><a href="index.php">Home</a></li>
+    <li><a href="guest_support.php" class="active">Support</a></li>
+  </ul>
 
-<ul class="nav-links">
-
-<li><a href="index.php">Home</a></li>
-
-<li><a href="register.php">Register</a></li>
-
-<li><a href="guest_support.php" class="active">Support</a></li>
-
-</ul>
-
+  <div class="nav-actions">
+    <a href="register.php" class="btn-primary">Register</a>
+  </div>
 </nav>
 
 <section class="support-page">

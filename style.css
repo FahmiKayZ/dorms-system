@@ -288,13 +288,33 @@ body{
 }
 
 .status-available{
+    display:inline-block;
+    background:#dcfce7;
     color:#16a34a;
     font-weight:700;
+    padding:4px 12px;
+    border-radius:20px;
+    font-size:13px;
 }
 
 .status-full{
+    display:inline-block;
+    background:#fee2e2;
     color:#dc2626;
     font-weight:700;
+    padding:4px 12px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.status-pending{
+    display:inline-block;
+    background:#fef3c7;
+    color:#d97706;
+    font-weight:700;
+    padding:4px 12px;
+    border-radius:20px;
+    font-size:13px;
 }
 
 /* =========================
@@ -357,14 +377,6 @@ body{
     .dashboard-container{
         width:95%;
     }
-}
-
-.bed-card{
-    background:#fff;
-    border-radius:16px;
-    padding:20px;
-    margin:18px 0;
-    box-shadow:0 8px 24px rgba(0,0,0,.08);
 }
 
 .bed-card h3{
