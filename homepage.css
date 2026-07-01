@@ -667,6 +667,39 @@ footer .brand { color: var(--accent); font-weight: 700; }
 
 }
 
+.stats{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    gap:80px;
+    max-width:1100px;
+    margin:0 auto;
+}
+
+.stat-item{
+    text-align:center;
+    flex:1;
+    min-width:140px;
+}
+
+.stat-item h3{
+    font-size:2.5rem;
+    font-weight:800;
+    margin:0 0 8px;
+    line-height:1;
+    color:var(--accent);
+}
+
+.stat-item p{
+    margin:0;
+    font-size:0.78rem;
+    font-weight:600;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--text-muted);
+}
+
 
 /* ===============================
    FOOTER

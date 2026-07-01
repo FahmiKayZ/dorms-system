@@ -3,43 +3,90 @@
 require 'connection.php';
 
 $success = "";
+$error   = "";
 
 if(isset($_POST['submit'])){
 
-    $student_name = trim($_POST['student_name']);
-    $student_id   = trim($_POST['student_id']);
-    $email        = trim($_POST['email']);
-    $subject      = trim($_POST['subject']);
-    $priority     = $_POST['priority'];
-    $message      = trim($_POST['message']);
+    $student_name = trim($_POST['student_name'] ?? '');
+    $student_id   = trim($_POST['student_id'] ?? '');
+    $email        = trim($_POST['email'] ?? '');
+    $subject      = trim($_POST['subject'] ?? '');
+    $priority     = $_POST['priority'] ?? 'Medium';
+    $message      = trim($_POST['message'] ?? '');
 
-    $stmt = $connect->prepare("
-        INSERT INTO support_tickets
-        (student_id, student_name, email, subject, priority, message, status)
-        VALUES (?, ?, ?, ?, ?, ?, 'Pending')
-    ");
+    $allowedPriorities = ['Low', 'Medium', 'High'];
 
-    $stmt->bind_param(
-        "ssssss",
-        $student_id,
-        $student_name,
-        $email,
-        $subject,
-        $priority,
-        $message
-    );
+    if($student_name === "" || $email === "" || $subject === "" || $message === ""){
 
-    if($stmt->execute()){
+        $error = "Please fill in all required fields before submitting.";
 
-        $ticketID = $connect->insert_id;
+    } elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)){
 
-        $success = "Your Support Ticket (#".$ticketID.") has been submitted successfully.";
+        $error = "Please enter a valid email address.";
+
+    } elseif(!in_array($priority, $allowedPriorities, true)){
+
+        $error = "Invalid priority selected.";
+
+    } else {
+
+        $stmt = $connect->prepare("
+            INSERT INTO support_tickets
+            (student_id, student_name, email, subject, priority, message, status)
+            VALUES (?, ?, ?, ?, ?, ?, 'Pending')
+        ");
+
+        $stmt->bind_param(
+            "ssssss",
+            $student_id,
+            $student_name,
+            $email,
+            $subject,
+            $priority,
+            $message
+        );
+
+        if($stmt->execute()){
+
+            $ticketID = $connect->insert_id;
+
+            $success = "Your Support Ticket (#".$ticketID.") has been submitted successfully.";
+
+            // clear fields after a successful submit
+            $student_name = $student_id = $email = $subject = $message = "";
+            $priority = "Medium";
+
+        } else {
+
+            $error = "Something went wrong while submitting your ticket. Please try again.";
+
+        }
+
+        $stmt->close();
 
     }
 
-    $stmt->close();
-
 }
+
+// FAQ data — easy to expand later
+$faqs = [
+    [
+        'q' => 'I cannot login.',
+        'a' => 'Please submit a support ticket and our administrator will assist you.'
+    ],
+    [
+        'q' => 'I cannot register.',
+        'a' => 'Please ensure your Student ID and Email are correct.'
+    ],
+    [
+        'q' => 'I forgot my password.',
+        'a' => 'Our administrator will help reset your password.'
+    ],
+    [
+        'q' => 'How long will it take?',
+        'a' => 'Most support tickets are answered within 24 hours.'
+    ],
+];
 
 ?>
 
@@ -95,56 +142,51 @@ Need help before logging in? Submit a support ticket and our administrator will 
 
     <h2>Frequently Asked Questions</h2>
 
-    <div class="faq-item">
+    <?php foreach($faqs as $i => $faq){ ?>
 
-        <h4>I cannot login.</h4>
+        <div class="faq-item">
 
-        <p>
-            Please submit a support ticket and our administrator will assist you.
-        </p>
+            <h4>
+                <button
+                    type="button"
+                    onclick="toggleFaq(<?= $i ?>)"
+                    style="background:none;border:none;cursor:pointer;font:inherit;color:inherit;text-align:left;width:100%;display:flex;justify-content:space-between;align-items:center;padding:0;"
+                    aria-expanded="false"
+                    aria-controls="faq-answer-<?= $i ?>"
+                >
+                    <span><?= htmlspecialchars($faq['q']) ?></span>
+                    <span id="faq-icon-<?= $i ?>">+</span>
+                </button>
+            </h4>
 
-    </div>
+            <p id="faq-answer-<?= $i ?>" style="display:none;">
+                <?= htmlspecialchars($faq['a']) ?>
+            </p>
 
-    <div class="faq-item">
+        </div>
 
-        <h4>I cannot register.</h4>
-
-        <p>
-            Please ensure your Student ID and Email are correct.
-        </p>
-
-    </div>
-
-    <div class="faq-item">
-
-        <h4>I forgot my password.</h4>
-
-        <p>
-            Our administrator will help reset your password.
-        </p>
-
-    </div>
-
-    <div class="faq-item">
-
-        <h4>How long will it take?</h4>
-
-        <p>
-            Most support tickets are answered within 24 hours.
-        </p>
-
-    </div>
+    <?php } ?>
 
 </div>
 <div class="ticket-card">
 
     <h2>Submit Support Ticket</h2>
 
+    <?php if($error){ ?>
+
+    <div class="success-message" style="background:#fee2e2;color:#991b1b;border-color:#fca5a5;">
+
+        ⚠ <?= htmlspecialchars($error); ?>
+
+    </div>
+
+    <?php } ?>
+
     <?php if($success){ ?>
 
     <div class="success-message">
 
-        <?= $success; ?>
+        ✓ <?= htmlspecialchars($success); ?>
 
     </div>
 
@@ -156,6 +198,7 @@ Need help before logging in? Submit a support ticket and our administrator will 
             type="text"
             name="student_name"
             placeholder="Full Name"
+            value="<?= htmlspecialchars($student_name ?? '') ?>"
             required
         >
 
@@ -163,12 +206,14 @@ Need help before logging in? Submit a support ticket and our administrator will 
             type="text"
             name="student_id"
             placeholder="Student ID (Optional)"
+            value="<?= htmlspecialchars($student_id ?? '') ?>"
         >
 
         <input
             type="email"
             name="email"
             placeholder="Email Address"
+            value="<?= htmlspecialchars($email ?? '') ?>"
             required
         >
 
@@ -176,6 +221,7 @@ Need help before logging in? Submit a support ticket and our administrator will 
             type="text"
             name="subject"
             placeholder="Subject"
+            value="<?= htmlspecialchars($subject ?? '') ?>"
             required
         >
 
@@ -184,11 +230,11 @@ Need help before logging in? Submit a support ticket and our administrator will 
             required
         >
 
-            <option value="Low">🟢 Low</option>
+            <option value="Low" <?= (($priority ?? '') === 'Low') ? 'selected' : '' ?>>🟢 Priority: Low</option>
 
-            <option value="Medium" selected>🟡 Medium</option>
+            <option value="Medium" <?= (($priority ?? 'Medium') === 'Medium') ? 'selected' : '' ?>>🟡 Priority: Medium</option>
 
-            <option value="High">🔴 High</option>
+            <option value="High" <?= (($priority ?? '') === 'High') ? 'selected' : '' ?>>🔴 Priority: High</option>
 
         </select>
 
@@ -196,8 +242,14 @@ Need help before logging in? Submit a support ticket and our administrator will 
             name="message"
             rows="6"
             placeholder="Describe your issue..."
+            maxlength="1000"
+            oninput="updateCount(this)"
             required
-        ></textarea>
+        ><?= htmlspecialchars($message ?? '') ?></textarea>
+
+        <div style="text-align:right;font-size:0.75rem;color:var(--text-muted);margin-top:-10px;" id="charCount">
+            <?= strlen($message ?? '') ?> / 1000 characters
+        </div>
 
         <button
             type="submit"
@@ -213,5 +265,36 @@ Need help before logging in? Submit a support ticket and our administrator will 
 </div>
 </div>
 </section>
+
+<script>
+  // FAQ accordion — only one open at a time
+  function toggleFaq(index) {
+    const answer = document.getElementById('faq-answer-' + index);
+    const icon   = document.getElementById('faq-icon-' + index);
+    const isOpen = answer.style.display === 'block';
+
+    document.querySelectorAll('[id^="faq-answer-"]').forEach((el) => {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('[id^="faq-icon-"]').forEach((el) => {
+      el.textContent = '+';
+    });
+
+    if (!isOpen) {
+      answer.style.display = 'block';
+      icon.textContent = '×';
+    }
+  }
+
+  // Character counter for message textarea
+  function updateCount(textarea) {
+    const count   = textarea.value.length;
+    const max     = textarea.getAttribute('maxlength');
+    const display = document.getElementById('charCount');
+    display.textContent = count + ' / ' + max + ' characters';
+    display.style.color = count > max * 0.9 ? '#d64545' : '';
+  }
+</script>
+
 </body>
 </html>

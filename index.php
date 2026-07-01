@@ -301,24 +301,28 @@ Our administrator is ready to help you.
 <!-- ── STATS BAR ── -->
 <div class="stats-bar">
 
-    <div class="stat">
-        <div class="stat-num" id="roomCounter">200+</div>
-        <div class="stat-label">Rooms Available</div>
+    <div class="stats">
+
+    <div class="stat-item">
+        <h3>✔</h3>
+        <p>Eligibility Check</p>
     </div>
 
-    <div class="stat">
-        <div class="stat-num" id="blockCounter">4</div>
-        <div class="stat-label">Blocks / Wings</div>
+    <div class="stat-item">
+        <h3 id="blockCounter">0</h3>
+        <p>Residential Blocks</p>
     </div>
 
-    <div class="stat">
-        <div class="stat-num">24 / 7</div>
-        <div class="stat-label">Support</div>
+    <div class="stat-item">
+        <h3>24/7</h3>
+        <p>System Access</p>
     </div>
 
-    <div class="stat">
-        <div class="stat-num" id="bookingCounter">100%</div>
-        <div class="stat-label">Online Booking</div>
+    <div class="stat-item">
+        <h3 id="bookingCounter">0%</h3>
+        <p>Online Booking</p>
+    </div>
+
     </div>
 
 </div>
@@ -415,8 +419,7 @@ const observer = new IntersectionObserver((entries) => {
 
             counterStarted = true;
 
-            animateCounter("roomCounter", 0, 200, 1200, "+");
-            animateCounter("blockCounter", 0, 4, 800, "");
+            animateCounter("blockCounter", 0, 2, 600, "");
             animateCounter("bookingCounter", 0, 100, 1400, "%");
 
         }
