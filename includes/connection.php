@@ -12,4 +12,5 @@ if(!$connect){
     die("Connection Failed: " . mysqli_connect_error());
 }
 
+require_once 'icons.php';
 ?>

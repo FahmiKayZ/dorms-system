@@ -1,0 +1,22 @@
+{
+  "files": [
+    "index.php",
+    "register.php",
+    "dashboard.php",
+    "admin_dashboard.php",
+    "floorplan.php",
+    "bookroom.php",
+    "cancelbooking.php",
+    "mybooking.php",
+    "eligibility.php",
+    "admin_rooms.php",
+    "admin_students.php",
+    "admin_eligibility.php",
+    "admin_support.php",
+    "support.php",
+    "guest_support.php"
+  ],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}

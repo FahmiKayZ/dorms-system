@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-01T02:43:40Z",
+  "title": "Design System: D.O.R.M.S.",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Shamrock Green", "canonical": "oklch(60% 0.17 150)", "tonalRamp": ["#001a10", "#004d30", "#008050", "#009e60", "#33b280", "#66c6a0", "#99dac0", "#cceee0"] },
+      "accent": { "role": "accent", "displayName": "Mantis Green", "canonical": "oklch(75% 0.19 140)", "tonalRamp": ["#0c3b17", "#1a602c", "#2d8c47", "#4eca6e", "#71d58b", "#95dfa8", "#b8eac5", "#dcf4e2"] },
+      "neutral-bg": { "role": "neutral", "displayName": "Whitesmoke", "canonical": "oklch(96% 0 0)", "tonalRamp": ["#1f1f1f", "#4a4a4a", "#7e7e7e", "#b5b5b5", "#d4d4d4", "#e8e8e8", "#f5f5f5", "#fafafa"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headlines only." },
+      "body": { "displayName": "Body", "purpose": "Readable system text." }
+    },
+    "shadows": [
+      { "name": "Card Shadow", "value": "0 1px 4px rgba(0,0,0,0.1)", "purpose": "Standard flat elevation card shadow." }
+    ],
+    "motion": [
+      { "name": "Standard Easing", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Clean, responsive state transitions." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Used for main actions like booking rooms or confirming changes.",
+      "html": "<button class=\"ds-btn-primary\">Book a Room</button>",
+      "css": ".ds-btn-primary { background: #3a9147; color: #ffffff; padding: 12px 24px; font-weight: 600; font-family: Inter, sans-serif; border: none; border-radius: 10px; cursor: pointer; transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-primary:hover { background: #2d7a3a; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Modern Campus Portal",
+    "overview": "D.O.R.M.S. utilizes a clean, modern, and high-contrast light design system. The system prioritizes functional efficiency, structured data displays, and high readability.",
+    "keyCharacteristics": ["Clean Structure", "Vibrant Accentuation", "Symmetrical Spacing"],
+    "rules": [
+      { "name": "The Green Rarity Rule", "body": "The vibrant Mantis Green accent is used on ≤10% of any screen surface to draw immediate attention to statuses or active states.", "section": "colors" },
+      { "name": "The Flat-By-Default Rule", "body": "All containers and inputs are flat at rest. Depth shadows are applied only to floating cards, modals, or dropdowns to draw attention.", "section": "elevation" }
+    ],
+    "dos": ["Do maintain a consistent 10px corner radius on all interactive components.", "Do ensure text overlays meet WCAG AA requirements."],
+    "donts": ["Don't use legacy table borders or tiny font sizes.", "Don't nest cards within card panels."]
+  }
+}
