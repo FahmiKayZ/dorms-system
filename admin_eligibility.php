@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("connection.php");
+include("includes/connection.php");
 
 if(!isset($_SESSION['adminID'])){
     header("Location:index.php");

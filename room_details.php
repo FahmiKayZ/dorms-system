@@ -5,7 +5,7 @@ if (!isset($_GET['room'])) {
 }
 
 $roomID = $_GET['room'];
-include "connection.php";
+include "includes/connection.php";
 $occupants = mysqli_query($connect, "
 SELECT
 booking.bedNumber,

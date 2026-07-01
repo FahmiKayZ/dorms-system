@@ -1,6 +1,6 @@
 <?php
 
-include 'connection.php';
+include "includes/connection.php";
 
 if(!isset($_GET['id'])){
     die("Ticket not found.");

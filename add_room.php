@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("connection.php");
+include("includes/connection.php");
 if(!isset($_SESSION['user']) || $_SESSION['user']['role']!="admin"){ header("Location:index.php"); exit(); }
 
 if(isset($_POST['save'])){

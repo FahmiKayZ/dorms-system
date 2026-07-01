@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include 'connection.php';
+include "includes/connection.php";
 $isLoggedIn = isset($_SESSION['user']);
 $userName   = $isLoggedIn ? htmlspecialchars($_SESSION['user']['name']) : '';
 

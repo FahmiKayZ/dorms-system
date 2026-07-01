@@ -7,7 +7,7 @@ if(!isset($_SESSION['studentID'])){
     exit();
 }
 
-include("connection.php");
+include("includes/connection.php");
 
 $studentID = $_SESSION['studentID'];
 

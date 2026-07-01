@@ -1,6 +1,6 @@
 <?php
 
-require 'connection.php';
+require 'includes/connection.php';
 
 $success = "";
 $error   = "";

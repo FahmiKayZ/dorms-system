@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-include("connection.php");
+include("includes/connection.php");
 
 $login = $_POST['username'];
 $password = $_POST['password'];
