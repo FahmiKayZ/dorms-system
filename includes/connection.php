@@ -5,7 +5,7 @@ $connect = mysqli_connect(
     "root",
     "",
     "dorms_db",
-    3307
+    3306
 );
 
 if(!$connect){
