@@ -25,18 +25,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 
         if (mysqli_num_rows($result) > 0) {
             $row = mysqli_fetch_assoc($result);
-            $_SESSION['user'] = [
-                'role' => 'student',
-                'studentID' => $row['studentID'],
-                'name' => $row['studentName'],
-                'email' => $row['studentEmail']
-            ];
-            $_SESSION['studentID'] = $row['studentID'];
-            $_SESSION['studentName'] = $row['studentName'];
-            header("Location: dashboard.php");
-            exit();
+            $studentID = $row['studentID'];
+
+            // Check eligibility status before allowing login
+            $eligResult = mysqli_query($connect, "SELECT status FROM eligibility WHERE studentID='$studentID'");
+            $eligRow = mysqli_fetch_assoc($eligResult);
+            $eligStatus = $eligRow['status'] ?? 'Pending';
+
+            if ($eligStatus === 'YES') {
+                $_SESSION['user'] = [
+                    'role' => 'student',
+                    'studentID' => $row['studentID'],
+                    'name' => $row['studentName'],
+                    'email' => $row['studentEmail']
+                ];
+                $_SESSION['studentID'] = $row['studentID'];
+                $_SESSION['studentName'] = $row['studentName'];
+                header("Location: dashboard.php");
+                exit();
+            } elseif ($eligStatus === 'Pending') {
+                $loginError = "Your eligibility status is still Pending. Please wait for approval from the College Administration Office before you can log in.";
+            } else {
+                $loginError = "You are not eligible to access this system. Please contact the College Administration Office for assistance.";
+            }
+        } else {
+            $loginError = "Incorrect Student ID or Password.";
         }
-        $loginError = "Incorrect Student ID or Password.";
     } else {
         $sql = "SELECT * FROM admin WHERE adminID='$username' AND adminPassword='$password'";
         $result = mysqli_query($connect, $sql);
@@ -93,6 +107,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     margin-bottom: 24px;
     text-decoration: none;
     display: block;
+  }
+
+  .back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    transition: color 0.2s ease;
+  }
+
+  .back-home:hover {
+    color: var(--bg-nav);
   }
 
   /* Sliding Tab Selector */
@@ -195,7 +225,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 </head>
 <body>
 
-<div class="login-card">
+<div style="display:flex; flex-direction:column; align-items:center; width:100%; max-width:440px;">
+  <a href="index.php" class="back-home">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Back to Home
+  </a>
+  <div class="login-card" style="width:100%;">
   <a href="index.php" class="login-logo"><?php echo Icons::home(28); ?> D.O.R.M.S<span>.</span></a>
   
   <div class="tab-container">
@@ -234,6 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 
   <div class="footer-links" id="register_footer">
     Don't have an account? <a href="register.php">Register here</a>
+  </div>
   </div>
 </div>
 

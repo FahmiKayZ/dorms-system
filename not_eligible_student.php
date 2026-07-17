@@ -2,17 +2,17 @@
 
 include("includes/connection.php");
 
-$id=$_GET['id'];
+$id = $_GET['id'];
 
 mysqli_query($connect,"
 UPDATE eligibility
-SET status='YES'
+SET status='NO'
 WHERE studentID='$id'
 ");
 
 echo "<script>
 
-alert('Student Approved Successfully');
+alert('Student marked as Not Eligible');
 
 window.location='admin_eligibility.php';
 

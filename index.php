@@ -17,6 +17,7 @@ if (isset($_GET['logout'])) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>D.O.R.M.S. – Digital Occupancy And Room Management System</title>
+<link rel="icon" type="image/png" href="images/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/homepage.css">
@@ -151,6 +152,7 @@ if (isset($_GET['logout'])) {
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
     <li><a href="#steps">How It Works</a></li>
+    <li><a href="about.php">About Us</a></li>
     <li><a href="#faq">FAQ</a></li>
   </ul>
 
@@ -176,24 +178,20 @@ if (isset($_GET['logout'])) {
 <!-- ── HERO ── -->
 <section class="hero">
   <div class="hero-content">
-    <span class="hero-eyebrow">KOLEJ KERAWANG</span>
+    <span class="hero-eyebrow">UITMKT KOLEJ KERAWANG</span>
 
     <h1 class="hero-headline">
-      Your Home,<br>
-      at a better <em>Place.</em>
+      Your Campus Room,<br>
+      <em>Simplified.</em>
     </h1>
 
     <p class="hero-body">
-      Book, manage, and track your university room entirely online.
-      Simple applications, instant confirmations, and real-time room availability — all in one place.
+      Book your room, check your eligibility, manage reservations,
+      and access accommodation services through one secure platform.
     </p>
 
     <div class="hero-cta">
-      <?php if ($isLoggedIn): ?>
-        <a href="dashboard.php" class="btn-primary">Book a Room</a>
-      <?php else: ?>
-        <a href="login.php" class="btn-primary">Book a Room</a>
-      <?php endif; ?>
+      <a href="room_layout.php" class="btn-primary">View Layout</a>
       <a href="eligibility.php" class="btn-ghost">Check Eligibility</a>
     </div>
   </div>

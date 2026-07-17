@@ -108,7 +108,16 @@ $sql = mysqli_query($connect, $query);
               <td><?php echo htmlspecialchars($row['studentGender']); ?></td>
               <td><span class="badge badge-warning"><?php echo Icons::clock(); ?> Pending</span></td>
               <td style="text-align:right;">
-                <a href="approve_student.php?id=<?php echo urlencode($row['studentID']); ?>" class="action-btn btn-approve" onclick="return confirm('Approve student <?php echo htmlspecialchars($row['studentName']); ?>?\n\nThey will be allowed to book rooms immediately.');"><?php echo Icons::check(); ?> Approve</a>
+                <div style="display:flex; gap:8px; justify-content:flex-end;">
+                  <a href="approve_student.php?id=<?php echo urlencode($row['studentID']); ?>"
+                  class="action-btn btn-approve"
+                  onclick="return confirm('Approve <?php echo htmlspecialchars($row['studentName']); ?>?\n\nThe student will be eligible to book a room.');">
+                  <?php echo Icons::check(); ?> Approve</a>
+                  
+                  <a href="not_eligible_student.php?id=<?php echo urlencode($row['studentID']); ?>"
+                  class="action-btn btn-delete"
+                  onclick="return confirm('Mark <?php echo htmlspecialchars($row['studentName']); ?> as Not Eligible?');"> 🚫 Not Eligible</a>
+                </div>
               </td>
             </tr>
           <?php endwhile; ?>

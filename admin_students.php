@@ -103,7 +103,7 @@ $result = mysqli_query($connect, $sql);
                 <?php endif; ?>
               </td>
               <td style="text-align:right;">
-                <a href="delete_student.php?id=<?php echo urlencode($row['studentID']); ?>" class="action-btn btn-delete" onclick="return confirm('Are you sure you want to delete student <?php echo htmlspecialchars($row['studentName']); ?>?\n\nThis will remove their profile and booking record.');"><?php echo Icons::delete(); ?> Delete</a>
+                <a href="delete_student.php?id=<?php echo urlencode($row['studentID']); ?>" class="action-btn btn-delete" onclick="return confirm('Are you sure you want to delete student <?php echo htmlspecialchars($row['studentName']); ?>?\n\n Thiswill remove their profile and booking record.');"><?php echo Icons::delete(); ?> Delete</a>
               </td>
             </tr>
           <?php endwhile; ?>

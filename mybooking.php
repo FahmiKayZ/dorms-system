@@ -93,6 +93,15 @@ $booking = mysqli_fetch_assoc($result);
           <strong><?php echo date("d M Y, h:i A", strtotime($booking['bookingDate'])); ?></strong>
         </div>
 
+        <?php if ($booking['bookingStatus'] == "Approved"): ?>
+
+        <div style="margin-bottom:20px; text-align:right;">
+          <a href="print_booking.php?id=<?php echo $booking['bookingID']; ?>"
+          class="btn-submit"
+          style="text-decoration:none; padding:12px 24px;">🖨 Print Booking Slip</a>
+        </div> 
+        <?php endif; ?>
+
         <div style="display:flex; justify-content:flex-end;">
           <a href="cancelbooking.php" class="btn-logout" style="padding: 12px 24px; text-decoration:none; text-align:center;">Cancel Reservation</a>
         </div>
